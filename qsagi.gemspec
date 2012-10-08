@@ -8,9 +8,9 @@ Gem::Specification.new do |gem|
   gem.version       = Qsagi::VERSION
   gem.authors       = ["Braintree"]
   gem.email         = ["code@getbraintree.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.description   = "A friendly way to talk to RabbitMQ"
+  gem.summary       = "A friendly way to talk to RabbitMQ"
+  gem.homepage      = "https://github.com/braintree/qsagi"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
