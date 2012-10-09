@@ -3,16 +3,20 @@ module Qsagi
     attr_reader :payload
 
     def initialize(message, payload)
-      @delivery_details = message[:delivery_details]
+      @message = message
       @payload = payload
     end
 
     def delivery_tag
-      @delivery_details[:delivery_tag]
+      _delivery_details[:delivery_tag]
     end
 
     def exchange
-      @delivery_details[:exchange]
+      _delivery_details[:exchange]
+    end
+
+    def _delivery_details
+      @delivery_details ||= @message.fetch(:delivery_details, {})
     end
   end
 end

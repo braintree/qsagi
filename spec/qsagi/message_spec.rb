@@ -9,6 +9,10 @@ describe Qsagi::Message do
       }
       Qsagi::Message.new(data, :parsed_payload).delivery_tag.should == "tag"
     end
+
+    it "gracefully handles no delivery details" do
+      Qsagi::Message.new({}, :parsed_payload).delivery_tag.should be_nil
+    end
   end
 
   describe "exchange" do
@@ -18,6 +22,10 @@ describe Qsagi::Message do
         :payload => "raw_payload"
       }
       Qsagi::Message.new(data, :parsed_payload).exchange.should == "the_exchange"
+    end
+
+    it "gracefully handles no delivery details" do
+      Qsagi::Message.new({}, :parsed_payload).exchange.should be_nil
     end
   end
 
