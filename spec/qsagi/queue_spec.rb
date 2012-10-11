@@ -41,6 +41,19 @@ describe Qsagi::Queue do
     end
   end
 
+  describe "length" do
+    it "returns the number of messages in the queue" do
+      ExampleQueue.connect do |queue|
+        queue.push("message")
+        queue.length.should == 1
+        queue.push("message")
+        queue.length.should == 2
+        queue.pop
+        queue.length.should == 1
+      end
+    end
+  end
+
   describe "pop" do
     it "automatically acks if :auto_ack is not passed in" do
       ExampleQueue.connect do |queue|

@@ -23,6 +23,10 @@ module Qsagi
       @client.send(:close_socket) unless @client.nil?
     end
 
+    def length
+      @queue.status[:message_count]
+    end
+
     def pop(options = {})
       auto_ack = options.fetch(:auto_ack, true)
       message = @queue.pop(:ack => !auto_ack)
@@ -33,10 +37,8 @@ module Qsagi
     end
 
     def push(message)
-      #exchange = @client.exchange(self.class._exchange)
       serialized_message = self.class._serializer.serialize(message)
-      # @exchange.publish(serialized_message, :key => @queue.name, :persistent => true)
-      @exchange.publish(serialized_message, :key => @queue.name, :persistent => true)
+      @exchange.publish(serialized_message, :key => @queue.name, :persistent => true, :mandatory => true)
     end
 
     def reconnect
