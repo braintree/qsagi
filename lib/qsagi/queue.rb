@@ -12,7 +12,7 @@ module Qsagi
     end
 
     def connect
-      @client = Bunny.new(:host => self.class.host, :port => self.class.port)
+      @client = Bunny.new(:host => self.class.host, :port => self.class.port, :heartbeat => self.class.heartbeat)
       @client.start
       @queue = @client.queue(self.class.queue_name, :durable => true, :arguments => {"x-ha-policy" => "all"})
       @exchange = @client.exchange(self.class._exchange)

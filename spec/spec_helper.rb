@@ -11,6 +11,10 @@ class ExampleQueue
     5672
   end
 
+  def self.heartbeat
+    300
+  end
+
   def self.queue_name
     "qsagi_testing"
   end
