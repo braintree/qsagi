@@ -12,7 +12,7 @@ describe Qsagi::Queue do
   describe "self.exchange" do
     it "configures the exchange" do
       queue_on_exchange1 = Class.new(ExampleQueue) do
-        exchange "exchange1"
+        exchange "exchange1", :type => :direct
       end
       queue_on_exchange2 = Class.new(ExampleQueue) do
         exchange "exchange2"

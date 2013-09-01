@@ -1,26 +1,24 @@
 module Qsagi
   module Queue
     def ack(message)
-      @queue.ack(:delivery_tag => message.delivery_tag)
+      @channel.ack(message.delivery_tag, false)
     end
 
     def clear
-      loop do
-        message = @queue.pop
-        break if message[:payload] == :queue_empty
-      end
+      @queue.purge
     end
 
     def connect
       @client = Bunny.new(:host => self.class.host, :port => self.class.port, :heartbeat => self.class.heartbeat)
       @client.start
-      @queue = @client.queue(self.class.queue_name, :durable => true, :arguments => {"x-ha-policy" => "all"})
-      @exchange = @client.exchange(self.class._exchange)
-      @queue.bind(@exchange, :key => self.class.queue_name) unless self.class._exchange.empty?
+      @channel = @client.create_channel
+      @exchange = @channel.exchange(self.class._exchange, self.class._exchange_options)
+      @queue = @channel.queue(self.class.queue_name, :durable => true, :arguments => {"x-ha-policy" => "all"})
+      @queue.bind(@exchange, :routing_key => self.class.queue_name) unless self.class._exchange.empty?
     end
 
     def disconnect
-      @client.send(:close_socket) unless @client.nil?
+      @client.send(:close) unless @client.nil?
     end
 
     def length
@@ -29,16 +27,16 @@ module Qsagi
 
     def pop(options = {})
       auto_ack = options.fetch(:auto_ack, true)
-      message = @queue.pop(:ack => !auto_ack)
+      delivery_info, properties, message = @queue.pop(:ack => !auto_ack)
 
-      unless message[:payload] == :queue_empty
-        self.class._message_class.new(message, self.class._serializer.deserialize(message[:payload]))
+      unless message.nil?
+        self.class._message_class.new(delivery_info, self.class._serializer.deserialize(message))
       end
     end
 
     def push(message)
       serialized_message = self.class._serializer.serialize(message)
-      @exchange.publish(serialized_message, :key => @queue.name, :persistent => true, :mandatory => true)
+      @exchange.publish(serialized_message, :routing_key => @queue.name, :persistent => true, :mandatory => true)
     end
 
     def reconnect
@@ -63,8 +61,9 @@ module Qsagi
         end
       end
 
-      def exchange(exchange)
+      def exchange(exchange, options = {})
         @exchange = exchange
+        @exchange_options = {:type => :direct}.merge(options)
       end
 
       def message_class(message_class)
@@ -77,6 +76,10 @@ module Qsagi
 
       def _exchange
         @exchange || ""
+      end
+
+      def _exchange_options
+        @exchange_options || {}
       end
 
       def _message_class

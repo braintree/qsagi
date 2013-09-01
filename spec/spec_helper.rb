@@ -1,4 +1,5 @@
 require "qsagi"
+require "ostruct"
 
 class ExampleQueue
   include Qsagi::Queue
@@ -22,10 +23,8 @@ end
 
 RSpec.configure do |c|
   c.before(:each) do
-    client = Bunny.new(:host => ExampleQueue.host, :port => ExampleQueue.port)
-    client.start
-    queue = client.queue(ExampleQueue.queue_name, :durable => true, :arguments => {"x-ha-policy" => "all"})
-    queue.delete rescue nil
-    client.send(:close_socket)
+    ExampleQueue.connect do |queue|
+      queue.clear
+    end
   end
 end
