@@ -54,6 +54,30 @@ describe Qsagi::Queue do
     end
   end
 
+  describe "reject" do
+    it "rejects the message and places it back on the queue" do
+      ExampleQueue.connect do |queue|
+        queue.push("message")
+        message = queue.pop(:auto_ack => false)
+        queue.reject(message, :requeue => true)
+      end
+      ExampleQueue.connect do |queue|
+        queue.length.should == 1
+      end
+    end
+
+    it "rejects and discards the message" do
+      ExampleQueue.connect do |queue|
+        queue.push("message")
+        message = queue.pop(:auto_ack => false)
+        queue.reject(message, :requeue => false)
+      end
+      ExampleQueue.connect do |queue|
+        queue.length.should == 0
+      end
+    end
+  end
+
   describe "pop" do
     it "automatically acks if :auto_ack is not passed in" do
       ExampleQueue.connect do |queue|

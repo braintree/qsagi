@@ -4,6 +4,10 @@ module Qsagi
       @channel.ack(message.delivery_tag, false)
     end
 
+    def reject(message, options={})
+      @channel.reject(message.delivery_tag, options.fetch(:requeue, true))
+    end
+
     def clear
       @queue.purge
     end
@@ -18,7 +22,7 @@ module Qsagi
     end
 
     def disconnect
-      @client.send(:close) unless @client.nil?
+      @client.close unless @client.nil?
     end
 
     def length
