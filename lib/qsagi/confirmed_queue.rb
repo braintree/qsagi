@@ -22,6 +22,10 @@ module Qsagi
       @queue.push(message)
     end
 
+    def pop(opts={})
+      @queue.pop(opts)
+    end
+
     def wait_for_confirms
       _channel.wait_for_confirms
     end
