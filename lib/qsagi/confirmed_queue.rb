@@ -6,6 +6,7 @@ module Qsagi
       @queue = queue
       @nacked_messages = []
       @unconfirmed_messages = {}
+      @wait_for_confirms = false
     end
 
     def connect
@@ -20,6 +21,7 @@ module Qsagi
     def push(message)
       @unconfirmed_messages[_channel.next_publish_seq_no] = message
       @queue.push(message)
+      @wait_for_confirms = true
     end
 
     def pop(opts={})
@@ -27,7 +29,7 @@ module Qsagi
     end
 
     def wait_for_confirms
-      _channel.wait_for_confirms
+      _channel.wait_for_confirms if _wait_for_confirms?
     end
 
     def _channel
@@ -55,6 +57,10 @@ module Qsagi
       _channel.confirm_select lambda { |delivery_tag, multiple, is_nack|
         _confirm_messages!(:delivery_tag => delivery_tag, :multiple => multiple, :is_nack => is_nack)
       }
+    end
+
+    def _wait_for_confirms?
+      @wait_for_confirms
     end
   end
 end
