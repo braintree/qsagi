@@ -108,4 +108,14 @@ describe Qsagi::Queue do
       end
     end
   end
+
+  describe "queue_type confirmed" do
+    it "should use a ConfirmedQueue" do
+      ExampleQueue.connect(:queue_type => :confirmed) do |queue|
+        queue.push("message")
+        queue.wait_for_confirms
+        queue.nacked_messages.size.should == 0
+      end
+    end
+  end
 end
