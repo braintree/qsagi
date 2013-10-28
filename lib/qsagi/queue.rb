@@ -35,6 +35,10 @@ module Qsagi
           :heartbeat => heartbeat,
           :message_class => _message_class,
           :queue_name => queue_name,
+          :durable => true,
+          :queue_arguments => {"x-ha-policy" => "all"},
+          :persistent => true,
+          :mandatory => true,
           :serializer => _serializer,
           :exchange_options => _exchange_options,
           :exchange => _exchange

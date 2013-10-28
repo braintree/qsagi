@@ -28,7 +28,7 @@ module Qsagi
       @client.start
       @channel = @client.create_channel
       @exchange = @channel.exchange(options[:exchange], options[:exchange_options])
-      @queue = @channel.queue(options[:queue_name], :durable => true, :arguments => {"x-ha-policy" => "all"})
+      @queue = @channel.queue(options[:queue_name], :durable => options[:durable], :arguments => options[:queue_arguments])
       @queue.bind(@exchange, :routing_key => options[:queue_name]) unless options[:exchange].empty?
     end
 
@@ -51,7 +51,7 @@ module Qsagi
 
     def push(message)
       serialized_message = options[:serializer].serialize(message)
-      @exchange.publish(serialized_message, :routing_key => @queue.name, :persistent => true, :mandatory => true)
+      @exchange.publish(serialized_message, :routing_key => @queue.name, :persistent => options[:persistent], :mandatory => options[:mandatory])
     end
 
     def reconnect
