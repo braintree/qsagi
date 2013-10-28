@@ -1,3 +1,3 @@
 module Qsagi
-  VERSION = "0.0.3"
+  VERSION = "1.0.0-pre1"
 end
