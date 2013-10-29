@@ -1,6 +1,7 @@
 require "bunny"
 require "json"
 
+require "qsagi/config"
 require "qsagi/broker"
 require "qsagi/message"
 require "qsagi/default_serializer"
