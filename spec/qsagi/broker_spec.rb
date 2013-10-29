@@ -69,4 +69,33 @@ describe Qsagi::Broker do
       end
     end
   end
+
+  describe "#queue" do
+    before { broker.connect }
+    after { broker.disconnect }
+    let(:queue) { broker.queue("qsagi.test") }
+
+    it "returns a named queue" do
+      queue.name.should == "qsagi.test"
+    end
+
+    it "returns a durable queue" do
+      queue.should be_a Bunny::Queue
+      queue.should be_durable
+    end
+  end
+
+  describe "#bind_queue" do
+    subject(:broker) { Qsagi::Broker.new(exchange: "qs") }
+    before { broker.connect }
+    after { broker.disconnect }
+    let(:queue) { broker.queue("qsagi.test") }
+
+    it "binds to exchange with given routing keys" do
+      routing_keys = %w[test1 test2]
+      queue.should_receive(:bind).with(anything, routing_key: "test1").once
+      queue.should_receive(:bind).with(anything, routing_key: "test2").once
+      broker.bind_queue(queue, routing_keys)
+    end
+  end
 end

@@ -37,6 +37,16 @@ module Qsagi
       @exchange.publish(json_message, metadata)
     end
 
+    def queue(name)
+      @channel.queue(name, durable: true)
+    end
+
+    def bind_queue(queue, routing_keys)
+      routing_keys.each do |routing_key|
+        queue.bind(@exchange, routing_key: routing_key)
+      end
+    end
+
     def generate_id
       SecureRandom.uuid
     end
