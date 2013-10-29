@@ -25,6 +25,10 @@ module Qsagi
       }
     end
 
+    def exchange_name
+      @config[:exchange]
+    end
+
     private
     def default_config
       {
