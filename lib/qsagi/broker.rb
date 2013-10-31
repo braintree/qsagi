@@ -11,11 +11,11 @@ module Qsagi
     end
 
     def connect
-      @connection = Bunny.new(@config.broker)
+      @connection = Bunny.new(@config.broker_options)
 
       @connection.start
       @channel = @connection.create_channel
-      @exchange = @channel.exchange(@config.exchange_name, @config.exchange)
+      @exchange = @channel.exchange(@config.exchange_name, @config.exchange_options)
     end
 
     def disconnect

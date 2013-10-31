@@ -4,7 +4,7 @@ module Qsagi
       @config = default_config.merge(config)
     end
 
-    def broker
+    def broker_options
       {
         host: @config[:host],
         port: @config[:port],
@@ -17,7 +17,7 @@ module Qsagi
       }
     end
 
-    def exchange
+    def exchange_options
       {
         type: @config[:exchange_type],
         durable: true,

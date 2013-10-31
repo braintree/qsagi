@@ -1,9 +1,9 @@
 require "spec_helper"
 
 describe Qsagi::Config do
-  describe "#broker" do
+  describe "#broker_options" do
     it "returns a configuration hash for a new broker" do
-      subject.broker.should == {
+      subject.broker_options.should == {
         host: "127.0.0.1",
         port: "5672",
         vhost: "/",
@@ -27,7 +27,7 @@ describe Qsagi::Config do
         network_recovery_interval: 0
       )
 
-      config.broker.should == {
+      config.broker_options.should == {
         host: "128.0.0.1",
         port: "15672",
         vhost: "qsagi",
@@ -40,9 +40,9 @@ describe Qsagi::Config do
     end
   end
 
-  describe "#exchange" do
+  describe "#exchange_options" do
     it "returns a configuration hash for a new exchange" do
-      subject.exchange.should == {
+      subject.exchange_options.should == {
         type: :topic,
         auto_delete: false,
         durable: true
@@ -54,7 +54,7 @@ describe Qsagi::Config do
         exchange_type: :fanout
       )
 
-      config.exchange.should == {
+      config.exchange_options.should == {
         type: :fanout,
         auto_delete: false,
         durable: true
