@@ -29,10 +29,11 @@ module Qsagi
       metadata = options.merge(
         routing_key: routing_key,
         timestamp: Time.now.to_i,
-        message_id: generate_id
+        message_id: generate_id,
+        content_type: "application/json"
       )
 
-      unless @connection
+      if @connection.nil? || @connection.closed?
         raise Qsagi::PublishError
       end
 

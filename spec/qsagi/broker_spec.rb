@@ -53,7 +53,8 @@ describe Qsagi::Broker do
         metadata = {
           routing_key: "qsagi.key",
           timestamp: Time.now.to_i,
-          message_id: "abcdef"
+          message_id: "abcdef",
+          content_type: "application/json"
         }
 
         broker.exchange.should_receive(:publish).with("{}", metadata).once

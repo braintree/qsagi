@@ -3,6 +3,7 @@ require "json"
 
 require "qsagi/config"
 require "qsagi/broker"
+require "qsagi/consumer"
 require "qsagi/message"
 require "qsagi/default_serializer"
 require "qsagi/json_serializer"
