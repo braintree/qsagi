@@ -2,34 +2,54 @@ require "spec_helper"
 
 describe Qsagi::Consumer do
   let(:single_consumer) do
-    class SingleConsumer
-      include Qsagi::Consumer
+    unless defined? SingleConsumer
+      class SingleConsumer
+        include Qsagi::Consumer
 
-      application "my_application"
-      subscribe "qsagi.test"
+        application "my_application"
+        subscribe "qsagi.test"
+      end
     end
 
     SingleConsumer
   end
 
   let(:multi_topic_consumer) do
-    class MultiTopicConsumer
-      include Qsagi::Consumer
+    unless defined? MultiTopicConsumer
+      class MultiTopicConsumer
+        include Qsagi::Consumer
 
-      subscribe "qsagi.test", "qsagi.test", "qsagi.test2"
+        subscribe "qsagi.test", "qsagi.test", "qsagi.test2"
+      end
     end
 
     MultiTopicConsumer
   end
 
+  describe ".included" do
+    it "adds consumer to main process" do
+      Qsagi.should_receive(:register_consumer) do |klass|
+        klass.should == single_consumer
+      end
+
+      single_consumer
+    end
+  end
+
   describe ".subscribe" do
-    it "stores topics subscribed" do
-      single_consumer.topics.should include("qsagi.test")
+    context "with one topic" do
+      subject { single_consumer }
+      its(:topics) { should include("qsagi.test") }
     end
 
-    it "only stores unique values" do
-      multi_topic_consumer.topics.length.should == 2
-      multi_topic_consumer.topics.should include("qsagi.test", "qsagi.test2")
+    context "with multiple topics" do
+      subject { multi_topic_consumer }
+
+      its(:topics) { should include("qsagi.test", "qsagi.test2") }
+
+      it "ignores duplicates" do
+        subject.topics.length.should == 2
+      end
     end
   end
 

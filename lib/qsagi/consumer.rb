@@ -2,6 +2,7 @@ module Qsagi
   module Consumer
     def self.included(klass)
       klass.extend(ClassMethods)
+      Qsagi.register_consumer(klass)
     end
 
     module ClassMethods

@@ -11,3 +11,13 @@ require "qsagi/queue"
 require "qsagi/standard_queue"
 require "qsagi/confirmed_queue"
 require "qsagi/version"
+
+module Qsagi
+  def self.register_consumer(consumer)
+    self.consumers << consumer
+  end
+
+  def self.consumers
+    @consumers ||= []
+  end
+end
