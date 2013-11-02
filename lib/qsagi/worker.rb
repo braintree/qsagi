@@ -20,10 +20,16 @@ module Qsagi
       @broker.bind_queue(queue, consumer.topics)
 
       queue.subscribe(ack: true) do |delivery_info, properties, payload|
-        body = JSON.load(payload, nil, symbolize_names: true)
-        consumer.new.perform(body)
-        @broker.ack(delivery_info.delivery_tag)
+        handle_message(consumer, delivery_info, properties, payload)
       end
+    end
+
+    def handle_message(consumer, delivery_info, properties, payload)
+      body = JSON.load(payload, nil, symbolize_names: true)
+      consumer.new.perform(body)
+      @broker.ack(delivery_info.delivery_tag)
+    rescue => e
+      @broker.nack(delivery_info.delivery_tag)
     end
   end
 end

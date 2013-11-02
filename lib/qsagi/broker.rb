@@ -27,6 +27,10 @@ module Qsagi
       @channel.ack(delivery_tag)
     end
 
+    def nack(delivery_tag)
+      @channel.nack(delivery_tag, requeue: false)
+    end
+
     def publish(routing_key, message, options={})
       json_message = JSON.dump(message)
 
