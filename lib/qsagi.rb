@@ -1,6 +1,8 @@
 require "bunny"
 require "json"
 
+require "qsagi/worker"
+require "qsagi/cli"
 require "qsagi/config"
 require "qsagi/broker"
 require "qsagi/consumer"
@@ -15,6 +17,21 @@ require "qsagi/version"
 module Qsagi
   def self.register_consumer(consumer)
     self.consumers << consumer
+  end
+
+  def self.connect(config = {})
+    broker = Qsagi::Broker.new(config)
+    broker.connect
+
+    if block_given?
+      begin
+        yield broker
+      ensure
+        broker.disconnect
+      end
+    else
+      broker
+    end
   end
 
   def self.consumers

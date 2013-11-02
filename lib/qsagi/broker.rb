@@ -23,6 +23,10 @@ module Qsagi
       @connection, @channel, @exchange = nil, nil, nil
     end
 
+    def ack(delivery_tag)
+      @channel.ack(delivery_tag)
+    end
+
     def publish(routing_key, message, options={})
       json_message = JSON.dump(message)
 
@@ -38,6 +42,10 @@ module Qsagi
       end
 
       @exchange.publish(json_message, metadata)
+    end
+
+    def connected?
+      @connection.open?
     end
 
     def queue(name)
