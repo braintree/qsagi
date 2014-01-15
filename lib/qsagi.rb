@@ -34,6 +34,10 @@ module Qsagi
     end
   end
 
+  def self.clear_consumers
+    @consumers = nil
+  end
+
   def self.consumers
     @consumers ||= []
   end

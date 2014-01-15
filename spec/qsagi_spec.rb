@@ -2,6 +2,8 @@ require "spec_helper"
 
 describe Qsagi do
   describe ".register_consumer" do
+    after { Qsagi.clear_consumers }
+
     it "stores consumers" do
       Qsagi.register_consumer(:consumer_1)
       Qsagi.register_consumer(:consumer_2)
