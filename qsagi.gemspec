@@ -17,6 +17,6 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
-  gem.add_dependency "bunny", "~> 0.10.5"
+  gem.add_dependency "bunny", "~> 1.1.0"
   gem.add_dependency "json", "~> 1.7.0"
 end
