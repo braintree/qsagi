@@ -52,6 +52,16 @@ module Qsagi
       @connection.open?
     end
 
+    def wait_on_threads(timeout)
+      @channel.work_pool.threads.none? do |thread|
+        thread.join(timeout).nil?
+      end
+    end
+
+    def stop
+      @channel.work_pool.kill
+    end
+
     def queue(name)
       @channel.queue(name, durable: true)
     end

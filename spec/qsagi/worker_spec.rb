@@ -5,34 +5,35 @@ describe Qsagi::Worker do
   let(:consumers) { [consumer, double("Consumer")] }
   let(:broker) { Qsagi::Broker.new }
   subject(:worker) { Qsagi::Worker.new(broker, consumers) }
+  before { broker.stub(:wait_on_threads).and_return(true) }
 
-  describe "#make_queues" do
+  describe "#run" do
     it "makes a queue for each consumer" do
       consumers.each do |c|
-        worker.should_receive(:make_queue).with(c)
+        worker.should_receive(:subscribe!).with(c)
       end
 
-      worker.make_queues
+      worker.run
     end
   end
 
-  describe "#make_queue" do
+  describe "#subscribe!" do
     let(:queue) { double("Queue", bind: nil, subscribe: nil) }
     before { broker.stub(queue: queue) }
 
     it "creates a queue" do
       broker.should_receive(:queue).with(consumer.queue_name).and_return(queue)
-      worker.make_queue(consumer)
+      worker.subscribe!(consumer)
     end
 
     it "binds to exchange with routing keys" do
       broker.should_receive(:bind_queue).with(queue, consumer.topics)
-      worker.make_queue(consumer)
+      worker.subscribe!(consumer)
     end
 
     it "subscribes to new messages" do
       queue.should_receive(:subscribe).with(ack: true)
-      worker.make_queue(consumer)
+      worker.subscribe!(consumer)
     end
   end
 

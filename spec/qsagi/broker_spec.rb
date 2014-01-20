@@ -14,7 +14,7 @@ describe Qsagi::Broker do
 
     context "with invalid config" do
       subject(:broker) { Qsagi::Broker.new(host: "invalid") }
-      let(:connect) { lambda { broker.connect } }
+      let(:connect) { -> { broker.connect } }
 
       specify { connect.should raise_error }
     end

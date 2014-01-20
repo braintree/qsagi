@@ -15,28 +15,34 @@ describe "simple consumer", :integration => true do
 
     subject(:cli) { Qsagi::CLI.new }
     let(:broker) { Qsagi::Broker.new(exchange: "testing") }
+    let(:queue) { broker.queue(simple_consumer.queue_name) }
 
     before { cli.config = {exchange: "testing"} }
     before { broker.connect }
+    before { queue.purge }
+
     after { broker.disconnect }
 
     it "performs work when a message is enqueued" do
-      simple_consumer.any_instance.should_receive(:perform).with({})
+      simple_consumer.any_instance.should_receive(:perform).with({}) do
+        cli.stop
+      end
 
       broker.publish("qsagi.integration.test", {})
 
       cli.run
     end
 
-    it "nacks the message when failing to process" do
+    xit "nacks the message when failing to process" do
+      Qsagi::Broker.any_instance.should_receive(:nack) do
+        cli.stop
+      end
+
       simple_consumer.any_instance.should_receive(:perform).and_raise("boom!")
 
       broker.publish("qsagi.integration.test", {})
 
       cli.run
-
-      queue = broker.queue(simple_consumer.queue_name)
-      broker.bind_queue(queue, simple_consumer.topics)
 
       expect(queue.message_count).to be_zero
     end

@@ -6,16 +6,16 @@ module Qsagi
     end
 
     def run
-      make_queues
-    end
-
-    def make_queues
       @consumers.each do |consumer|
-        make_queue(consumer)
+        subscribe!(consumer)
       end
+
+      register_signal_handlers
+
+      handle_signals until @broker.wait_on_threads(0.1)
     end
 
-    def make_queue(consumer)
+    def subscribe!(consumer)
       queue = @broker.queue(consumer.queue_name)
       @broker.bind_queue(queue, consumer.topics)
 
@@ -30,6 +30,26 @@ module Qsagi
       @broker.ack(delivery_info.delivery_tag)
     rescue => e
       @broker.nack(delivery_info.delivery_tag)
+    end
+
+    def register_signal_handlers
+      Thread.main[:signals] = []
+      [:QUIT, :TERM, :INT].each do |signal|
+        trap(signal) do
+          Thread.main[:signals] << signal
+        end
+      end
+    end
+
+    def handle_signals
+      signal = Thread.main[:signals].shift
+      if signal
+        stop
+      end
+    end
+
+    def stop
+      @broker.stop
     end
   end
 end

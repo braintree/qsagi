@@ -9,7 +9,7 @@ module Qsagi
     end
 
     def stop
-
+      @worker.stop
     end
   end
 end
