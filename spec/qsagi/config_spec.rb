@@ -51,7 +51,7 @@ describe Qsagi::Config do
 
     it "allows you to override defaults" do
       config = Qsagi::Config.new(
-        exchange_type: :fanout
+        exchange: {name: "", type: :fanout}
       )
 
       config.exchange_options.should == {

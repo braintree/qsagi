@@ -14,10 +14,10 @@ describe "simple consumer", :integration => true do
     end
 
     subject(:cli) { Qsagi::CLI.new }
-    let(:broker) { Qsagi::Broker.new(exchange: "testing") }
+    let(:broker) { Qsagi::Broker.new(exchange: {name: "testing", type: :topic}) }
     let(:queue) { broker.queue(simple_consumer.queue_name) }
 
-    before { cli.config = {exchange: "testing"} }
+    before { cli.config = {exchange: {name: "testing", type: :topic}} }
     before { broker.connect }
     before { queue.purge }
 

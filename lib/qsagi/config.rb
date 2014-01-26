@@ -19,14 +19,14 @@ module Qsagi
 
     def exchange_options
       {
-        type: @config[:exchange_type],
+        type: @config[:exchange][:type],
         durable: true,
         auto_delete: false
       }
     end
 
     def exchange_name
-      @config[:exchange]
+      @config[:exchange][:name]
     end
 
     private
@@ -38,8 +38,7 @@ module Qsagi
         user: "guest",
         password: "guest",
         heartbeat: :server,
-        exchange: "",
-        exchange_type: :topic,
+        exchange: {name: "", type: :topic},
         logger: Logger.new($stdout),
         network_recovery_interval: 1,
         automatically_recover: true

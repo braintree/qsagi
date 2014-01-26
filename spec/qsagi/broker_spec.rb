@@ -87,7 +87,7 @@ describe Qsagi::Broker do
   end
 
   describe "#bind_queue" do
-    subject(:broker) { Qsagi::Broker.new(exchange: "qs") }
+    subject(:broker) { Qsagi::Broker.new(exchange: {name: "qs", type: :topic}) }
     before { broker.connect }
     after { broker.disconnect }
     let(:queue) { broker.queue("qsagi.test") }
