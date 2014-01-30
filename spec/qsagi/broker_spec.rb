@@ -71,6 +71,36 @@ describe Qsagi::Broker do
     end
   end
 
+  describe "#publish_and_wait" do
+    before { broker.connect }
+    after { broker.disconnect }
+
+    it "publishes a message to an exchange and waits for confirmation" do
+      broker.exchange.should_receive(:publish).once
+      broker.channel.should_receive(:wait_for_confirms).once
+      broker.publish_and_wait("qsagi.key", "message")
+    end
+
+    xit "dumps the message as JSON" do
+      broker.exchange.should_receive(:publish).with("{}", anything).once
+      broker.publish("qsagi.key", {})
+    end
+
+    xit "adds time and ID meta-data to message" do
+      SecureRandom.stub(:uuid).and_return("abcdef")
+
+      metadata = {
+        routing_key: "qsagi.key",
+        timestamp: Time.now.to_i,
+        message_id: "abcdef",
+        content_type: "application/json"
+      }
+
+      broker.exchange.should_receive(:publish).with("{}", metadata).once
+      broker.publish("qsagi.key", {})
+    end
+  end
+
   describe "#queue" do
     before { broker.connect }
     after { broker.disconnect }

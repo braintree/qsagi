@@ -48,6 +48,12 @@ module Qsagi
       @exchange.publish(json_message, metadata)
     end
 
+    def publish_and_wait(routing_key, message, options={})
+      enter_confirm_select!
+      publish(routing_key, message, options)
+      wait_for_confirms
+    end
+
     def connected?
       @connection.open?
     end
@@ -74,6 +80,14 @@ module Qsagi
 
     def generate_id
       SecureRandom.uuid
+    end
+
+    def enter_confirm_select!
+      @channel.confirm_select unless @channel.using_publisher_confirmations?
+    end
+
+    def wait_for_confirms
+      @channel.wait_for_confirms
     end
   end
 end
