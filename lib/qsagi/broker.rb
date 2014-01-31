@@ -61,13 +61,15 @@ module Qsagi
     end
 
     def wait_on_threads(timeout)
+      return true unless @channel.work_pool.running?
+
       @channel.work_pool.threads.none? do |thread|
         thread.join(timeout).nil?
       end
     end
 
     def stop
-      @channel.work_pool.kill
+      @channel.work_pool.kill if @channel.work_pool.running?
     end
 
     def queue(name)

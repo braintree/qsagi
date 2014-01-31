@@ -1,7 +1,5 @@
 module Qsagi
   class CLI
-    attr_accessor :config
-
     def run
       if load_app && start == :success
         exit 0
@@ -27,7 +25,7 @@ module Qsagi
     end
 
     def start
-      broker = Qsagi.connect(config)
+      broker = Qsagi.connect
       @worker = Qsagi::Worker.new(broker, Qsagi.consumers)
       @worker.run
       :success
