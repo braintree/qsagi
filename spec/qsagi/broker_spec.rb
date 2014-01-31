@@ -80,24 +80,19 @@ describe Qsagi::Broker do
       broker.channel.should_receive(:wait_for_confirms).once
       broker.publish_and_wait("qsagi.key", "message")
     end
+  end
 
-    xit "dumps the message as JSON" do
-      broker.exchange.should_receive(:publish).with("{}", anything).once
-      broker.publish("qsagi.key", {})
-    end
+  describe "#nacked_messages" do
+    before { broker.connect }
+    after { broker.disconnect }
 
-    xit "adds time and ID meta-data to message" do
-      SecureRandom.stub(:uuid).and_return("abcdef")
+    it "returns array of nacked_messages" do
+      broker.exchange.should_receive(:publish).once
+      broker.channel.stub(:wait_for_confirms).and_return(false)
+      broker.channel.stub(:nacked_set).and_return([1])
 
-      metadata = {
-        routing_key: "qsagi.key",
-        timestamp: Time.now.to_i,
-        message_id: "abcdef",
-        content_type: "application/json"
-      }
-
-      broker.exchange.should_receive(:publish).with("{}", metadata).once
-      broker.publish("qsagi.key", {})
+      broker.publish_and_wait("qsagi.key", {key: "value"})
+      broker.nacked_messages.should == [{key: "value"}]
     end
   end
 

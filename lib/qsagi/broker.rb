@@ -8,6 +8,7 @@ module Qsagi
 
     def initialize(config = {})
       @config = Qsagi::Config.new(config)
+      @published_messages = {}
     end
 
     def connect
@@ -50,8 +51,9 @@ module Qsagi
 
     def publish_and_wait(routing_key, message, options={})
       enter_confirm_select!
+      store_message_for_confirm(message)
       publish(routing_key, message, options)
-      wait_for_confirms
+      nacked_messages
     end
 
     def connected?
@@ -70,6 +72,19 @@ module Qsagi
 
     def queue(name)
       @channel.queue(name, durable: true)
+    end
+
+    def store_message_for_confirm(message)
+      @published_messages[@channel.next_publish_seq_no] = message
+    end
+
+    def nacked_messages
+      if wait_for_confirms
+        @published_messages.clear
+        []
+      else
+        @published_messages.values_at(*@channel.nacked_set)
+      end
     end
 
     def bind_queue(queue, routing_keys)
