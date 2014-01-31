@@ -17,7 +17,7 @@ describe "simple consumer", :integration => true do
     let(:broker) { Qsagi::Broker.new(exchange: {name: "testing", type: :topic}) }
     let(:queue) { broker.queue(simple_consumer.queue_name) }
 
-    before { cli.config = {exchange: {name: "testing", type: :topic}} }
+    before { cli.stub(:parse_options).and_return(exchange: {name: "testing", type: :topic}) }
     before { broker.connect }
     before { queue.purge }
 
