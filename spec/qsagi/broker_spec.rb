@@ -112,7 +112,7 @@ describe Qsagi::Broker do
   end
 
   describe "#bind_queue" do
-    subject(:broker) { Qsagi::Broker.new(exchange: {name: "qs", type: :topic}) }
+    subject(:broker) { Qsagi::Broker.new }
     before { broker.connect }
     after { broker.disconnect }
     let(:queue) { broker.queue("qsagi.test") }
@@ -121,7 +121,7 @@ describe Qsagi::Broker do
       routing_keys = %w[test1 test2]
       queue.should_receive(:bind).with(anything, routing_key: "test1").once
       queue.should_receive(:bind).with(anything, routing_key: "test2").once
-      broker.bind_queue(queue, routing_keys)
+      broker.bind_queue(queue, routing_keys, name: "qs", options: {type: :topic, durable: true, auto_delete: false})
     end
   end
 end

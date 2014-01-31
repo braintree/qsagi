@@ -10,6 +10,25 @@ module Qsagi
         @application = name
       end
 
+      def exchange_name(name)
+        @exchange_name = name
+      end
+
+      def exchange_type(type)
+        @exchange_type = type
+      end
+
+      def exchange
+        {
+          name: @exchange_name || "",
+          options: {
+            type: @exchange_type || :topic,
+            durable: true,
+            auto_delete: false
+          }
+        }
+      end
+
       def queue_name
         (_queue_prefix + _underscored_name).downcase
       end

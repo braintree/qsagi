@@ -7,6 +7,7 @@ describe "simple consumer", :integration => true do
         class SimpleConsumer
           include Qsagi::Consumer
           subscribe "qsagi.integration.test"
+          exchange_name "testing"
         end
       end
 
@@ -17,7 +18,6 @@ describe "simple consumer", :integration => true do
     let(:broker) { Qsagi::Broker.new(exchange: {name: "testing", type: :topic}) }
     let(:queue) { broker.queue(simple_consumer.queue_name) }
 
-    before { cli.stub(:parse_options).and_return(exchange: {name: "testing", type: :topic}) }
     before { broker.connect }
     before { queue.purge }
 

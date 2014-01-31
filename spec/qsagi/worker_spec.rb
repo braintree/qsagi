@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Qsagi::Worker do
-  let(:consumer) { double("Consumer", queue_name: "consumer1", topics: %w(test fire)) }
+  let(:consumer) { double("Consumer", queue_name: "consumer1", topics: %w(test fire), exchange: {name: "qs", options: {type: :topic, auto_delete: false, durable: true}}) }
   let(:consumers) { [consumer, double("Consumer")] }
   let(:broker) { Qsagi::Broker.new }
   subject(:worker) { Qsagi::Worker.new(broker, consumers) }
@@ -18,8 +18,11 @@ describe Qsagi::Worker do
   end
 
   describe "#subscribe!" do
+    let(:channel) { double("Channel", exchange: nil) }
     let(:queue) { double("Queue", bind: nil, subscribe: nil) }
     before { broker.stub(queue: queue) }
+    before { broker.connect }
+    after { broker.disconnect }
 
     it "creates a queue" do
       broker.should_receive(:queue).with(consumer.queue_name).and_return(queue)
@@ -27,7 +30,7 @@ describe Qsagi::Worker do
     end
 
     it "binds to exchange with routing keys" do
-      broker.should_receive(:bind_queue).with(queue, consumer.topics)
+      broker.should_receive(:bind_queue).with(queue, consumer.topics, anything)
       worker.subscribe!(consumer)
     end
 

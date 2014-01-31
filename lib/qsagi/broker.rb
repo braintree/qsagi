@@ -89,9 +89,11 @@ module Qsagi
       end
     end
 
-    def bind_queue(queue, routing_keys)
+    def bind_queue(queue, routing_keys, exchange)
+      exchange = @channel.exchange(exchange[:name], exchange[:options])
+
       routing_keys.each do |routing_key|
-        queue.bind(@exchange, routing_key: routing_key)
+        queue.bind(exchange, routing_key: routing_key)
       end
     end
 
