@@ -30,7 +30,9 @@ describe "simple consumer", :integration => true do
 
       broker.publish("qsagi.integration.test", {})
 
-      cli.run
+      expect do
+        cli.run
+      end.to raise_error(SystemExit)
     end
 
     xit "nacks the message when failing to process" do

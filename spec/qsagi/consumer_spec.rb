@@ -27,6 +27,8 @@ describe Qsagi::Consumer do
   end
 
   describe ".included" do
+    before { Object.send(:remove_const, :SingleConsumer) if defined?(SingleConsumer) }
+
     it "adds consumer to main process" do
       Qsagi.should_receive(:register_consumer) do |klass|
         klass.should == single_consumer
