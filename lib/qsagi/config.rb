@@ -25,6 +25,10 @@ module Qsagi
       }
     end
 
+    def application_name
+      @config[:application_name]
+    end
+
     def exchange_name
       @config[:exchange][:name]
     end
@@ -32,6 +36,7 @@ module Qsagi
     private
     def default_config
       {
+        application_name: "",
         vhost: "/",
         host: "127.0.0.1",
         port: "5672",

@@ -6,10 +6,6 @@ module Qsagi
     end
 
     module ClassMethods
-      def application(name)
-        @application = name
-      end
-
       def exchange_name(name)
         @exchange_name = name
       end
@@ -29,8 +25,19 @@ module Qsagi
         }
       end
 
+      def dead_letter_exchange
+        {
+          name: @exchange_name.empty? ? "" : "dlx.#{@exchange_name}",
+          options: {
+            type: @exchange_type || :topic,
+            durable: true,
+            auto_delete: false
+          }
+        }
+      end
+
       def queue_name
-        (_queue_prefix + _underscored_name).downcase
+        _underscored_name.downcase
       end
 
       def subscribe(*topics)
@@ -39,10 +46,6 @@ module Qsagi
 
       def topics
         @topics ||= Set.new
-      end
-
-      def _queue_prefix
-        @application.nil? ? "" : "#{@application}."
       end
 
       def _underscored_name

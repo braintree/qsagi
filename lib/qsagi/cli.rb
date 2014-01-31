@@ -60,6 +60,10 @@ module Qsagi
           options[:password] = value
         end
 
+        opts.on("-a", "--application-name NAME", "RabbitMQ Password") do |value|
+          options[:application_name] = value
+        end
+
         opts.on("--heartbeat [HEARTBEAT]", "RabbitMQ Heartbeat") do |value|
           options[:heartbeat] = value
         end

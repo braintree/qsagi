@@ -15,7 +15,7 @@ describe "simple consumer", :integration => true do
     end
 
     subject(:cli) { Qsagi::CLI.new }
-    let(:broker) { Qsagi::Broker.new(exchange: {name: "testing", type: :topic}) }
+    let(:broker) { Qsagi::Broker.new(application_name: "qsagi", exchange: {name: "testing", type: :topic}) }
     let(:queue) { broker.queue(simple_consumer.queue_name) }
 
     before { broker.connect }

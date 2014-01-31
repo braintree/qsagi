@@ -72,8 +72,8 @@ module Qsagi
       @channel.work_pool.kill if @channel.work_pool.running?
     end
 
-    def queue(name)
-      @channel.queue(name, durable: true)
+    def queue(name, prefix="")
+      @channel.queue(queue_prefix(prefix) + name, durable: true, arguments: queue_arguments)
     end
 
     def store_message_for_confirm(message)
@@ -107,6 +107,22 @@ module Qsagi
 
     def wait_for_confirms
       @channel.wait_for_confirms
+    end
+
+    def queue_prefix(prefix)
+      application_prefix = @config.application_name + "."
+      if prefix.empty?
+        application_prefix
+      else
+        prefix + "." + application_prefix
+      end
+    end
+
+    def queue_arguments
+      {
+        "x-ha-policy" => "all",
+        "x-dead-letter-exchange" => "dlx.#{@config.application_name}"
+      }
     end
   end
 end

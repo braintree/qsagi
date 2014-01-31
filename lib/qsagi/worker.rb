@@ -19,6 +19,9 @@ module Qsagi
       queue = @broker.queue(consumer.queue_name)
       @broker.bind_queue(queue, consumer.topics, consumer.exchange)
 
+      dlq = @broker.queue(consumer.queue_name, "dlq")
+      @broker.bind_queue(dlq, consumer.topics, consumer.dead_letter_exchange)
+
       queue.subscribe(ack: true) do |delivery_info, properties, payload|
         handle_message(consumer, delivery_info, properties, payload)
       end

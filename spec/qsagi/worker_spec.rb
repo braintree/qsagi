@@ -1,7 +1,9 @@
 require "spec_helper"
 
 describe Qsagi::Worker do
-  let(:consumer) { double("Consumer", queue_name: "consumer1", topics: %w(test fire), exchange: {name: "qs", options: {type: :topic, auto_delete: false, durable: true}}) }
+  let(:exchange) { {name: "qs", options: {type: :topic, auto_delete: false, durable: true}} }
+  let(:dead_letter_exchange) { {name: "dlx.qs", options: {type: :topic, auto_delete: false, durable: true}} }
+  let(:consumer) { double("Consumer", queue_name: "consumer1", topics: %w(test fire), exchange: exchange, dead_letter_exchange: dead_letter_exchange) }
   let(:consumers) { [consumer, double("Consumer")] }
   let(:broker) { Qsagi::Broker.new }
   subject(:worker) { Qsagi::Worker.new(broker, consumers) }
@@ -29,8 +31,8 @@ describe Qsagi::Worker do
       worker.subscribe!(consumer)
     end
 
-    it "binds to exchange with routing keys" do
-      broker.should_receive(:bind_queue).with(queue, consumer.topics, anything)
+    it "binds to exchange and dead_letter_exchange with routing keys" do
+      broker.should_receive(:bind_queue).with(queue, consumer.topics, anything).twice
       worker.subscribe!(consumer)
     end
 

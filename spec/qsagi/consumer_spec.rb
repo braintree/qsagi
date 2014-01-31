@@ -6,7 +6,6 @@ describe Qsagi::Consumer do
       class SingleConsumer
         include Qsagi::Consumer
 
-        application "my_application"
         subscribe "qsagi.test"
       end
     end
@@ -56,8 +55,8 @@ describe Qsagi::Consumer do
   end
 
   describe ".queue_name" do
-    it "namespaces queue with application name" do
-      single_consumer.queue_name.should == "my_application.single_consumer"
+    it "underscores class name" do
+      single_consumer.queue_name.should == "single_consumer"
     end
 
     it "does not start with period if application not set" do

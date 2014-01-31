@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Qsagi::Broker do
-  subject(:broker) { Qsagi::Broker.new }
+  subject(:broker) { Qsagi::Broker.new(application_name: "qsagi") }
 
   describe "#connect" do
     context "with default config" do
@@ -99,7 +99,7 @@ describe Qsagi::Broker do
   describe "#queue" do
     before { broker.connect }
     after { broker.disconnect }
-    let(:queue) { broker.queue("qsagi.test") }
+    let(:queue) { broker.queue("test") }
 
     it "returns a named queue" do
       queue.name.should == "qsagi.test"
@@ -112,10 +112,10 @@ describe Qsagi::Broker do
   end
 
   describe "#bind_queue" do
-    subject(:broker) { Qsagi::Broker.new }
+    subject(:broker) { Qsagi::Broker.new(application_name: "qsagi") }
     before { broker.connect }
     after { broker.disconnect }
-    let(:queue) { broker.queue("qsagi.test") }
+    let(:queue) { broker.queue("test") }
 
     it "binds to exchange with given routing keys" do
       routing_keys = %w[test1 test2]
