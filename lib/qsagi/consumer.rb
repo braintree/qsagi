@@ -27,7 +27,7 @@ module Qsagi
 
       def dead_letter_exchange
         {
-          name: @exchange_name.empty? ? "" : "dlx.#{@exchange_name}",
+          name: @exchange_name.empty? ? "" : "dlx.#{@application_name}",
           options: {
             type: @exchange_type || :topic,
             durable: true,

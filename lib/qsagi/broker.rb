@@ -17,6 +17,7 @@ module Qsagi
       @connection.start
       @channel = @connection.create_channel
       @exchange = @channel.exchange(@config.exchange_name, @config.exchange_options)
+      @dead_letter_exchange = @channel.exchange("dlx.#{@config.application_name}", @config.exchange_options)
     end
 
     def disconnect
@@ -29,7 +30,7 @@ module Qsagi
     end
 
     def nack(delivery_tag)
-      @channel.nack(delivery_tag, requeue: false)
+      @channel.nack(delivery_tag, false, false)
     end
 
     def publish(routing_key, message, options={})
