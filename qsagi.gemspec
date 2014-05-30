@@ -18,5 +18,5 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
   gem.add_dependency "bunny", "~> 1.1.0"
-  gem.add_dependency "json", "~> 1.7.0"
+  gem.add_dependency "json", "~> 1.8.0"
 end
