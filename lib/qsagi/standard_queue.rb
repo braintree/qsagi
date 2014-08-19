@@ -23,7 +23,9 @@ module Qsagi
         :host => options[:host],
         :port => options[:port],
         :heartbeat => options[:heartbeat],
-        :continuation_timeout => options[:continuation_timeout]
+        :continuation_timeout => options[:continuation_timeout],
+        :username => options[:username],
+        :password => options[:password],
       )
       @client.start
       @channel = @client.create_channel
