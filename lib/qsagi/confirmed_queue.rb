@@ -1,3 +1,5 @@
+require 'thread'
+
 module Qsagi
   class ConfirmedQueue
     attr_reader :nacked_messages
@@ -7,6 +9,7 @@ module Qsagi
       @nacked_messages = []
       @unconfirmed_messages = {}
       @wait_for_confirms = false
+      @semaphore = Mutex.new
     end
 
     def connect
@@ -19,7 +22,10 @@ module Qsagi
     end
 
     def push(message)
-      @unconfirmed_messages[_channel.next_publish_seq_no] = message
+      next_sequence_number = _channel.next_publish_seq_no
+      @semaphore.synchronize do
+        @unconfirmed_messages[next_sequence_number] = message
+      end
       @queue.push(message)
       @wait_for_confirms = true
     end
@@ -54,9 +60,13 @@ module Qsagi
     end
 
     def _confirm_select
-      _channel.confirm_select lambda { |delivery_tag, multiple, is_nack|
-        _confirm_messages!(:delivery_tag => delivery_tag, :multiple => multiple, :is_nack => is_nack)
-      }
+      callback = lambda do |delivery_tag, multiple, is_nack|
+        @semaphore.synchronize do
+          _confirm_messages!(:delivery_tag => delivery_tag, :multiple => multiple, :is_nack => is_nack)
+        end
+      end
+
+      _channel.confirm_select(callback)
     end
 
     def _wait_for_confirms?
