@@ -44,7 +44,7 @@ module Qsagi
 
     def pop(options = {})
       auto_ack = options.fetch(:auto_ack, true)
-      delivery_info, properties, message = @queue.pop(:ack => !auto_ack)
+      delivery_info, properties, message = @queue.pop(:manual_ack => !auto_ack)
 
       unless message.nil?
         _message_class.new(delivery_info, _serializer.deserialize(message))
