@@ -26,6 +26,9 @@ module Qsagi
         :continuation_timeout => options[:continuation_timeout],
         :username => options[:username],
         :password => options[:password],
+        :connect_timeout => options[:connect_timeout],
+        :read_timeout => options[:read_timeout],
+        :write_timeout => options[:write_timeout]
       )
       @client.start
       @channel = @client.create_channel
