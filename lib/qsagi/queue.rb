@@ -41,7 +41,10 @@ module Qsagi
           :mandatory => true,
           :serializer => _serializer,
           :exchange_options => _exchange_options,
-          :exchange => _exchange
+          :exchange => _exchange,
+          :connect_timeout => 5,
+          :read_timeout => 5,
+          :write_timeout => 5
         }
       end
 
