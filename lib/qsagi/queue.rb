@@ -44,7 +44,8 @@ module Qsagi
           :exchange => _exchange,
           :connect_timeout => 5,
           :read_timeout => 5,
-          :write_timeout => 5
+          :write_timeout => 5,
+          :logger => nil
         }
       end
 

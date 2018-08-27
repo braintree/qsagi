@@ -19,7 +19,7 @@ module Qsagi
     end
 
     def connect
-      @client = Bunny.new(
+      client_options = {
         :host => options[:host],
         :port => options[:port],
         :heartbeat => options[:heartbeat],
@@ -28,8 +28,12 @@ module Qsagi
         :password => options[:password],
         :connect_timeout => options[:connect_timeout],
         :read_timeout => options[:read_timeout],
-        :write_timeout => options[:write_timeout]
-      )
+        :write_timeout => options[:write_timeout],
+        :logger => options[:logger]
+      }
+      client_options.delete(:logger) if client_options[:logger].nil?
+
+      @client = Bunny.new(client_options)
       @client.start
       @channel = @client.create_channel
       @exchange = @channel.exchange(options[:exchange], options[:exchange_options])
