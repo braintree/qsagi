@@ -5,7 +5,7 @@ describe Qsagi::Queue do
     ExampleQueue.connect do |queue|
       queue.push("message")
       result = queue.pop
-      expect(result.payload).to eq "message"
+      expect(result.payload).to eq("message")
     end
   end
 
@@ -22,8 +22,8 @@ describe Qsagi::Queue do
       end
       queue_on_exchange1.connect do |queue|
         message = queue.pop
-        expect(message.payload).to eq "message1"
-        expect(message.exchange).to eq "exchange1"
+        expect(message.payload).to eq("message1")
+        expect(message.exchange).to eq("exchange1")
       end
       queue_on_exchange2.connect do |queue|
         expect(queue.pop).to be_nil
@@ -45,11 +45,11 @@ describe Qsagi::Queue do
     it "returns the number of messages in the queue" do
       ExampleQueue.connect do |queue|
         queue.push("message")
-        expect(queue.length).to eq 1
+        expect(queue.length).to eq(1)
         queue.push("message")
-        expect(queue.length).to eq 2
+        expect(queue.length).to eq(2)
         queue.pop
-        expect(queue.length).to eq 1
+        expect(queue.length).to eq(1)
       end
     end
   end
@@ -62,7 +62,7 @@ describe Qsagi::Queue do
         queue.reject(message, :requeue => true)
       end
       ExampleQueue.connect do |queue|
-        expect(queue.length).to eq 1
+        expect(queue.length).to eq(1)
       end
     end
 
@@ -73,7 +73,7 @@ describe Qsagi::Queue do
         queue.reject(message, :requeue => false)
       end
       ExampleQueue.connect do |queue|
-        expect(queue.length).to eq 0
+        expect(queue.length).to eq(0)
       end
     end
   end
@@ -83,7 +83,7 @@ describe Qsagi::Queue do
       ExampleQueue.connect do |queue|
         queue.push("message")
         message = queue.pop
-        expect(message.payload).to eq "message"
+        expect(message.payload).to eq("message")
       end
       ExampleQueue.connect do |queue|
         message = queue.pop
@@ -95,11 +95,11 @@ describe Qsagi::Queue do
       ExampleQueue.connect do |queue|
         queue.push("message")
         message = queue.pop(:auto_ack => false)
-        expect(message.payload).to eq "message"
+        expect(message.payload).to eq("message")
       end
       ExampleQueue.connect do |queue|
         message = queue.pop(:auto_ack => false)
-        expect(message.payload).to eq "message"
+        expect(message.payload).to eq("message")
         queue.ack(message)
       end
       ExampleQueue.connect do |queue|
@@ -114,7 +114,7 @@ describe Qsagi::Queue do
       ExampleQueue.connect(:queue_type => :confirmed) do |queue|
         queue.push("message")
         queue.wait_for_confirms
-        expect(queue.nacked_messages.size).to eq 0
+        expect(queue.nacked_messages.size).to eq(0)
       end
     end
   end

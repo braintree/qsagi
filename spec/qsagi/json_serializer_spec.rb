@@ -9,7 +9,7 @@ describe Qsagi::JsonSerializer do
 
   describe "self.serialize" do
     it "parses json" do
-      expect(Qsagi::JsonSerializer.serialize({"a" => "b"})).to eq '{"a":"b"}'
+      expect(Qsagi::JsonSerializer.serialize({"a" => "b"})).to eq('{"a":"b"}')
     end
   end
 

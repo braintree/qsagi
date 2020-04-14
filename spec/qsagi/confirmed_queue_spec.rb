@@ -6,14 +6,14 @@ describe Qsagi::ConfirmedQueue do
       queue = Qsagi::ConfirmedQueue.new(nil)
       queue.instance_variable_set(:@unconfirmed_messages, {2 => "message"})
       queue._confirm_messages!(:delivery_tag => 2, :multiple => false, :is_nack => true)
-      expect(queue.nacked_messages).to eq ["message"]
+      expect(queue.nacked_messages).to eq(["message"])
     end
 
     it "adds multiple nacked messages to nacked_messages" do
       queue = Qsagi::ConfirmedQueue.new(nil)
       queue.instance_variable_set(:@unconfirmed_messages, {2 => "message", 3 => "other_message"})
       queue._confirm_messages!(:delivery_tag => 3, :multiple => true, :is_nack => true)
-      expect(queue.nacked_messages).to eq ["message", "other_message"]
+      expect(queue.nacked_messages).to eq(["message", "other_message"])
     end
 
     it "removes a single acked message from unconfirmed_messages" do
