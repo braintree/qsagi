@@ -3,13 +3,13 @@ require "spec_helper"
 describe Qsagi::JsonSerializer do
   describe "self.deserialize" do
     it "parses json" do
-      Qsagi::JsonSerializer.deserialize('{"a": "b"}').should == {"a" => "b"}
+      expect(Qsagi::JsonSerializer.deserialize('{"a": "b"}')).to eq("a" => "b")
     end
   end
 
   describe "self.serialize" do
     it "parses json" do
-      Qsagi::JsonSerializer.serialize({"a" => "b"}).should == '{"a":"b"}'
+      expect(Qsagi::JsonSerializer.serialize({"a" => "b"})).to eq('{"a":"b"}')
     end
   end
 
@@ -19,7 +19,7 @@ describe Qsagi::JsonSerializer do
     end
     json_queue.connect do |queue|
       queue.push :a => 1
-      queue.pop.payload.should == {'a' => 1}
+      expect(queue.pop.payload).to eq('a' => 1)
     end
   end
 end
